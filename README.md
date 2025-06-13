@@ -24,31 +24,24 @@
 
 ### 前端运行
 
-2. 安装依赖
+1. 安装依赖
 ```bash
 npm install
+```
 
-3. 启动开发服务器
+2. 启动开发服务器
 ```bash
 npm run dev
-
-
+```
 
 ### 后端运行
 
-1. 进入后端目录
-```bash
-cd backend
-```
-
-2. 安装依赖
+1. 安装依赖
 ```bash
 pip install -r requirements.txt
-
-
 ```
 
-3. 启动服务器
+2. 启动服务器
 ```bash
 python app.py
 ```
