@@ -44,6 +44,17 @@ const globalStyles = `
 .datacenter-scrollbar::-webkit-scrollbar-thumb:hover {
   background: rgba(100, 255, 218, 0.4);
 }
+
+/* 动画延迟 */
+.animation-delay-1000 {
+  animation-delay: 1s;
+}
+.animation-delay-2000 {
+  animation-delay: 2s;
+}
+.animation-delay-3000 {
+  animation-delay: 3s;
+}
 `;
 
 interface ServerOption {
@@ -1107,27 +1118,27 @@ const ServersPage = () => {
               <span className="text-sm font-medium text-cyber-accent">默认配置</span>
             </div>
             <div className="flex flex-wrap gap-1.5">
-              {filteredDefaultOptions.map(option => {
-                // 确定此选项属于哪个组
-                let groupName = "其他";
-                for (const [name, group] of Object.entries(optionGroups)) {
-                  if (group.some(o => o.value === option.value)) {
-                    groupName = name;
-                    break;
+                {filteredDefaultOptions.map(option => {
+                  // 确定此选项属于哪个组
+                  let groupName = "其他";
+                  for (const [name, group] of Object.entries(optionGroups)) {
+                    if (group.some(o => o.value === option.value)) {
+                      groupName = name;
+                      break;
+                    }
                   }
-                }
-                
+                  
                 const { displayLabel } = formatOptionDisplay(option, groupName);
-                
-                return (
-                  <div
-                    key={option.value}
+                  
+                  return (
+                    <div
+                      key={option.value}
                     className="bg-cyber-accent/10 px-3 py-1 rounded text-sm border border-cyber-accent/20"
-                  >
-                    <span className="font-medium">{displayLabel}</span>
-                  </div>
-                );
-              })}
+                    >
+                      <span className="font-medium">{displayLabel}</span>
+                    </div>
+                  );
+                })}
             </div>
           </div>
         )}
@@ -1167,33 +1178,33 @@ const ServersPage = () => {
                         const isSelected = isOptionSelected(server.planCode, option.value);
                         
                         return (
-                          <label 
+                            <label 
                             key={option.value}
                             className={`flex items-center p-1.5 rounded cursor-pointer transition-colors border
-                              ${isSelected 
+                                ${isSelected 
                                 ? 'bg-cyber-accent/15 border-cyber-accent/40' 
                                 : 'bg-slate-800/40 border-slate-700 hover:bg-slate-700/40 hover:border-cyber-accent/30'}`}
-                          >
+                            >
                             <div className="relative mr-1.5 flex items-center justify-center w-3.5 h-3.5 flex-shrink-0">
-                              <input
-                                type="checkbox"
-                                checked={isSelected}
-                                onChange={() => toggleOption(server.planCode, option.value, groupName)}
-                                className="opacity-0 absolute w-full h-full cursor-pointer"
-                              />
+                                <input
+                                  type="checkbox"
+                                  checked={isSelected}
+                                  onChange={() => toggleOption(server.planCode, option.value, groupName)}
+                                    className="opacity-0 absolute w-full h-full cursor-pointer"
+                                  />
                               <div className={`w-3.5 h-3.5 border rounded-sm flex items-center justify-center ${isSelected ? 'border-cyber-accent bg-cyber-accent/30' : 'border-slate-500'}`}>
-                                {isSelected && (
+                                    {isSelected && (
                                   <svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="text-cyber-accent">
-                                    <polyline points="20 6 9 17 4 12"></polyline>
-                                  </svg>
-                                )}
-                              </div>
-                            </div>
+                                        <polyline points="20 6 9 17 4 12"></polyline>
+                                      </svg>
+                                    )}
+                                  </div>
+                                </div>
                             <div className="flex-1 min-w-0">
                               <div className="text-xs font-medium truncate leading-tight">{displayLabel}</div>
                               <div className="text-[10px] text-slate-400 font-mono truncate leading-tight">{detailLabel}</div>
-                            </div>
-                          </label>
+                              </div>
+                            </label>
                         );
                       })}
                     </div>
@@ -1409,13 +1420,14 @@ const ServersPage = () => {
               key={server.planCode}
               variants={itemVariants}
             >
-              <Card className="border-cyber-accent/30 overflow-hidden h-full">
-                {/* Compact Header */}
-                <CardHeader className="px-4 py-3 bg-cyber-grid/20 border-b border-cyber-accent/20">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-3">
-                      <div className="p-2 bg-cyber-accent/20 rounded-lg">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-cyber-accent">
+              <Card className="border-slate-700/50 overflow-hidden h-full bg-gradient-to-br from-slate-900/80 to-slate-800/60 shadow-xl shadow-slate-900/20 backdrop-blur-sm">
+                {/* Modern Header */}
+                <CardHeader className="px-6 py-5 bg-gradient-to-r from-cyber-accent/10 via-cyber-primary/5 to-transparent border-b border-slate-700/50 relative">
+                  <div className="absolute inset-0 bg-gradient-to-r from-cyber-accent/5 to-transparent"></div>
+                  <div className="relative flex items-center justify-between">
+                    <div className="flex items-center space-x-4">
+                      <div className="p-3 bg-gradient-to-br from-cyber-accent/20 to-cyber-primary/20 rounded-xl border border-cyber-accent/30 shadow-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-cyber-accent">
                           <rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect>
                           <rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect>
                           <line x1="6" y1="6" x2="6.01" y2="6"></line>
@@ -1423,59 +1435,71 @@ const ServersPage = () => {
                         </svg>
                       </div>
                       <div>
-                        <CardTitle className="text-xl font-bold cyber-glow-text">{server.planCode}</CardTitle>
-                        <p className="text-sm text-cyber-muted">{server.name}</p>
+                        <CardTitle className="text-2xl font-bold text-white mb-1">{server.planCode}</CardTitle>
+                        <p className="text-slate-300 font-medium">{server.name}</p>
                       </div>
                     </div>
-                    <div className="bg-cyber-accent/15 px-3 py-1.5 rounded-md text-sm border border-cyber-accent/30 text-cyber-accent font-medium">
+                    <div className="bg-gradient-to-r from-cyber-accent/15 to-cyber-primary/15 px-4 py-2 rounded-xl text-sm border border-cyber-accent/30 text-cyber-accent font-semibold shadow-lg backdrop-blur-sm">
                       {server.name}
                     </div>
                   </div>
                 </CardHeader>
                 
-                <CardContent className="p-4">
-                  {/* Compact Hardware Specs */}
-                  <div className="mb-4">
-                    <div className="flex items-center mb-3">
-                      <Settings size={16} className="text-cyber-accent mr-2" />
-                      <h3 className="text-sm font-semibold text-cyber-accent">硬件规格</h3>
+                <CardContent className="p-6">
+                  {/* Modern Hardware Specs */}
+                  <div className="mb-6">
+                    <div className="flex items-center mb-4">
+                      <div className="p-2 bg-gradient-to-br from-cyber-accent/20 to-cyber-primary/20 rounded-lg border border-cyber-accent/30 mr-3">
+                        <Settings size={18} className="text-cyber-accent" />
+                      </div>
+                      <h3 className="text-lg font-bold text-white">硬件规格</h3>
                     </div>
-                    <div className="grid grid-cols-4 gap-3">
-                      <div className="flex items-center space-x-2 p-3 bg-slate-800/40 rounded-lg border border-cyber-accent/20 hover:border-cyber-accent/40 transition-colors">
-                        <Cpu size={16} className="text-cyber-accent flex-shrink-0" />
-                        <div className="min-w-0">
-                          <div className="text-xs text-cyber-muted">CPU</div>
-                          <div className="font-medium text-sm truncate">{formatServerSpec(server.cpu, "CPU")}</div>
-                        </div>
+                    <div className="grid grid-cols-4 gap-4">
+                      <div className="group flex items-center space-x-3 p-4 bg-gradient-to-br from-slate-800/60 to-slate-700/40 rounded-xl border border-slate-600/50 hover:border-cyber-accent/40 transition-all duration-300 hover:shadow-lg hover:shadow-cyber-accent/10">
+                        <div className="p-2 bg-gradient-to-br from-cyber-accent/20 to-cyber-primary/20 rounded-lg border border-cyber-accent/30">
+                      <Cpu size={18} className="text-cyber-accent" />
                       </div>
-                      <div className="flex items-center space-x-2 p-3 bg-slate-800/40 rounded-lg border border-cyber-accent/20 hover:border-cyber-accent/40 transition-colors">
-                        <Database size={16} className="text-cyber-accent flex-shrink-0" />
-                        <div className="min-w-0">
-                          <div className="text-xs text-cyber-muted">内存</div>
-                          <div className="font-medium text-sm truncate">{formatServerSpec(server.memory, "内存")}</div>
-                        </div>
+                        <div className="min-w-0 flex-1">
+                          <div className="text-xs text-slate-400 mb-1">CPU</div>
+                          <div className="font-semibold text-sm text-white truncate">{formatServerSpec(server.cpu, "CPU")}</div>
+                    </div>
                       </div>
-                      <div className="flex items-center space-x-2 p-3 bg-slate-800/40 rounded-lg border border-cyber-accent/20 hover:border-cyber-accent/40 transition-colors">
-                        <HardDrive size={16} className="text-cyber-accent flex-shrink-0" />
-                        <div className="min-w-0">
-                          <div className="text-xs text-cyber-muted">存储</div>
-                          <div className="font-medium text-sm truncate">{formatServerSpec(server.storage, "存储")}</div>
-                        </div>
+                      <div className="group flex items-center space-x-3 p-4 bg-gradient-to-br from-slate-800/60 to-slate-700/40 rounded-xl border border-slate-600/50 hover:border-cyber-accent/40 transition-all duration-300 hover:shadow-lg hover:shadow-cyber-accent/10">
+                        <div className="p-2 bg-gradient-to-br from-cyber-accent/20 to-cyber-primary/20 rounded-lg border border-cyber-accent/30">
+                      <Database size={18} className="text-cyber-accent" />
                       </div>
-                      <div className="flex items-center space-x-2 p-3 bg-slate-800/40 rounded-lg border border-cyber-accent/20 hover:border-cyber-accent/40 transition-colors">
-                        <Wifi size={16} className="text-cyber-accent flex-shrink-0" />
-                        <div className="min-w-0">
-                          <div className="text-xs text-cyber-muted">带宽</div>
-                          <div className="font-medium text-sm truncate">{formatServerSpec(server.bandwidth, "带宽")}</div>
+                        <div className="min-w-0 flex-1">
+                          <div className="text-xs text-slate-400 mb-1">内存</div>
+                          <div className="font-semibold text-sm text-white truncate">{formatServerSpec(server.memory, "内存")}</div>
+                    </div>
+                      </div>
+                      <div className="group flex items-center space-x-3 p-4 bg-gradient-to-br from-slate-800/60 to-slate-700/40 rounded-xl border border-slate-600/50 hover:border-cyber-accent/40 transition-all duration-300 hover:shadow-lg hover:shadow-cyber-accent/10">
+                        <div className="p-2 bg-gradient-to-br from-cyber-accent/20 to-cyber-primary/20 rounded-lg border border-cyber-accent/30">
+                      <HardDrive size={18} className="text-cyber-accent" />
+                      </div>
+                        <div className="min-w-0 flex-1">
+                          <div className="text-xs text-slate-400 mb-1">存储</div>
+                          <div className="font-semibold text-sm text-white truncate">{formatServerSpec(server.storage, "存储")}</div>
+                    </div>
+                      </div>
+                      <div className="group flex items-center space-x-3 p-4 bg-gradient-to-br from-slate-800/60 to-slate-700/40 rounded-xl border border-slate-600/50 hover:border-cyber-accent/40 transition-all duration-300 hover:shadow-lg hover:shadow-cyber-accent/10">
+                        <div className="p-2 bg-gradient-to-br from-cyber-accent/20 to-cyber-primary/20 rounded-lg border border-cyber-accent/30">
+                      <Wifi size={18} className="text-cyber-accent" />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <div className="text-xs text-slate-400 mb-1">带宽</div>
+                          <div className="font-semibold text-sm text-white truncate">{formatServerSpec(server.bandwidth, "带宽")}</div>
                         </div>
                       </div>
                     </div>
                     {server.vrackBandwidth && server.vrackBandwidth !== "N/A" && (
-                      <div className="mt-3 flex items-center space-x-2 p-3 bg-slate-800/40 rounded-lg border border-cyber-accent/20">
-                        <ArrowRightLeft size={16} className="text-cyber-accent flex-shrink-0" />
-                        <div className="min-w-0">
-                          <div className="text-xs text-cyber-muted">内网带宽</div>
-                          <div className="font-medium text-sm">{formatServerSpec(server.vrackBandwidth, "内网带宽")}</div>
+                      <div className="mt-4 flex items-center space-x-3 p-4 bg-gradient-to-br from-slate-800/60 to-slate-700/40 rounded-xl border border-slate-600/50">
+                        <div className="p-2 bg-gradient-to-br from-cyber-accent/20 to-cyber-primary/20 rounded-lg border border-cyber-accent/30">
+                        <ArrowRightLeft size={18} className="text-cyber-accent" />
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <div className="text-xs text-slate-400 mb-1">内网带宽</div>
+                          <div className="font-semibold text-sm text-white">{formatServerSpec(server.vrackBandwidth, "内网带宽")}</div>
                         </div>
                       </div>
                     )}
@@ -1484,37 +1508,43 @@ const ServersPage = () => {
                   {/* 服务器配置选项 */}
                   {renderServerOptions(server)}
                   
-                  {/* Compact Datacenters Section */}
-                  <div className="mt-4 rounded-lg overflow-hidden border border-cyber-accent/30">
-                    <div className="flex justify-between items-center bg-slate-800/40 px-3 py-2 border-b border-cyber-accent/30">
-                      <div className="flex items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-cyber-accent mr-1.5">
-                          <rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect>
-                          <rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect>
-                          <line x1="6" y1="6" x2="6.01" y2="6"></line>
-                          <line x1="6" y1="18" x2="6.01" y2="18"></line>
-                        </svg>
-                        <span className="text-xs font-medium text-cyber-accent">数据中心选择</span>
-                        <span className="ml-1.5 text-xs text-cyber-muted">({getSelectedDatacentersList(server.planCode).length})</span>
+                  {/* Elegant Datacenters Section */}
+                  <div className="mt-6">
+                    {/* Elegant Header */}
+                    <div className="flex items-center justify-between mb-6">
+                      <div className="flex items-center space-x-4">
+                        <div className="p-3 bg-gradient-to-br from-slate-800/80 to-slate-700/80 rounded-xl border border-slate-600/50 backdrop-blur-sm">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-cyber-accent">
+                            <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                            <path d="M2 17l10 5 10-5"/>
+                            <path d="M2 12l10 5 10-5"/>
+                          </svg>
+                        </div>
+                        <div>
+                          <h3 className="text-xl font-bold text-white mb-1">数据中心部署</h3>
+                          <p className="text-sm text-slate-400">
+                            已选择 <span className="text-cyber-accent font-semibold">{getSelectedDatacentersList(server.planCode).length}</span> 个位置
+                          </p>
+                        </div>
                       </div>
-                      <div className="flex space-x-1.5">
+                      <div className="flex items-center space-x-3">
                         <Button
                           onClick={() => checkAvailability(server.planCode)}
                           disabled={isCheckingAvailability || !isAuthenticated}
                           variant="cyber"
                           size="sm"
-                          className="h-6 text-xs px-2"
+                          className="h-10 px-4 bg-slate-800/60 hover:bg-slate-700/60 border-slate-600/50 text-slate-200 hover:text-white backdrop-blur-sm"
                         >
                           {isCheckingAvailability && selectedServer === server.planCode ? (
                             <span className="inline-flex items-center">
-                              <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1 h-2.5 w-2.5 animate-pulse text-cyber-accent">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2 animate-spin">
                                 <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
                               </svg>
                               检查中
                             </span>
                           ) : (
                             <span className="inline-flex items-center">
-                              <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1">
+                              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2">
                                 <circle cx="12" cy="12" r="10"></circle>
                                 <line x1="12" y1="16" x2="12" y2="12"></line>
                                 <line x1="12" y1="8" x2="12.01" y2="8"></line>
@@ -1535,103 +1565,140 @@ const ServersPage = () => {
                           disabled={!isAuthenticated || getSelectedDatacentersList(server.planCode).length === 0}
                           variant="cyber-filled"
                           size="sm"
-                          className="h-6 text-xs px-2"
+                          className="h-10 px-6 bg-gradient-to-r from-cyber-accent to-cyber-primary hover:from-cyber-accent-dark hover:to-cyber-primary-dark text-white font-semibold"
                         >
+                          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2">
+                            <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                            <path d="M2 17l10 5 10-5"/>
+                            <path d="M2 12l10 5 10-5"/>
+                          </svg>
                           加入队列
                         </Button>
                       </div>
                     </div>
                     
-                    <div className="px-3 py-1.5 bg-slate-900/20 border-b border-cyber-accent/20">
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs text-cyber-muted">选择部署位置</span>
-                        <div className="flex space-x-1">
+                    {/* Control Bar */}
+                    <div className="flex items-center justify-between mb-4 px-1">
+                      <div className="flex items-center space-x-3">
+                        <div className="flex items-center space-x-2 text-slate-400">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+                          </svg>
+                          <span className="text-sm font-medium">选择部署位置</span>
+                        </div>
+                        <div className="h-4 w-px bg-slate-600"></div>
+                        <div className="flex items-center space-x-2">
                           <Button
                             onClick={() => toggleAllDatacenters(server.planCode, true)}
-                            variant="cyber"
+                            variant="ghost"
                             size="sm"
-                            className="h-5 text-xs px-2 bg-cyber-accent/10 hover:bg-cyber-accent/20"
+                            className="h-8 px-3 text-xs text-cyber-accent hover:bg-cyber-accent/10 hover:text-cyber-accent"
                           >
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1">
+                              <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
                             全选
                           </Button>
                           <Button
                             onClick={() => toggleAllDatacenters(server.planCode, false)}
-                            variant="cyber"
+                            variant="ghost"
                             size="sm"
-                            className="h-5 text-xs px-2"
+                            className="h-8 px-3 text-xs text-slate-400 hover:bg-slate-700/50 hover:text-slate-300"
                           >
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1">
+                              <line x1="18" y1="6" x2="6" y2="18"></line>
+                              <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
                             取消
                           </Button>
                         </div>
                       </div>
                     </div>
                     
-                    {/* 极简数据中心网格 */}
-                    <div className="bg-slate-900/10 p-2">
-                      <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-1.5">
+                    {/* Elegant Datacenter Grid */}
+                    <div className="relative">
+                      {/* Subtle background pattern */}
+                      <div className="absolute inset-0 opacity-5">
+                        <div className="absolute inset-0 bg-gradient-to-br from-cyber-accent via-transparent to-cyber-primary"></div>
+                      </div>
+                      
+                      <div className="relative grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
                         {OVH_DATACENTERS.map(dc => {
                               const dcCode = dc.code.toUpperCase();
-                          // Ensure availability and selectedDatacenters are correctly scoped to the current server
                               const availStatus = availability[server.planCode]?.[dcCode.toLowerCase()] || "unknown";
                               const isSelected = selectedDatacenters[server.planCode]?.[dcCode];
                               
-                          let statusText = "查询中";
-                          let statusColorClass = "text-yellow-400";
-                          let statusBgClass = "bg-yellow-400/20";
+                          let statusText = "未知";
+                          let statusColor = "text-slate-400";
+                          let statusBg = "bg-slate-500/20";
+                          let statusBorder = "border-slate-500/30";
                               
                               if (availStatus === "unavailable") {
                             statusText = "不可用";
-                            statusColorClass = "text-red-400";
-                            statusBgClass = "bg-red-400/20";
+                            statusColor = "text-red-400";
+                            statusBg = "bg-red-500/20";
+                            statusBorder = "border-red-500/30";
                               } else if (availStatus && availStatus !== "unknown") {
                             statusText = availStatus.includes("H") ? availStatus : "可用";
-                            statusColorClass = "text-green-400";
-                            statusBgClass = "bg-green-400/20";
+                            statusColor = "text-green-400";
+                            statusBg = "bg-green-500/20";
+                            statusBorder = "border-green-500/30";
                               }
                               
                               return (
                                 <div 
                                   key={dcCode}
-                              className={`relative p-2 rounded-md cursor-pointer transition-all duration-200 ease-in-out border
-                                    ${isSelected 
-                                            ? 'bg-cyber-accent/20 border-cyber-accent shadow-md'
-                                            : 'bg-slate-800/60 border-slate-700 hover:bg-slate-700/60 hover:border-cyber-accent/40'}
-                                         `}
+                              className="group relative cursor-pointer transition-all duration-200 ease-out"
                                   onClick={() => toggleDatacenterSelection(server.planCode, dcCode)}
-                              title={`${dc.name} (${dc.region}) - ${statusText}`}
                             >
-                              <div className="flex items-center justify-between mb-1">
-                                <div className="flex items-center space-x-1">
-                                  <span className={`fi fi-${dc.countryCode.toLowerCase()} text-base`}></span>
-                                  <span className={`font-semibold text-sm ${isSelected ? 'text-cyber-accent' : 'text-slate-100'}`}>{dcCode}</span>
+                              {/* Config-style card */}
+                              <div className={`relative rounded-lg border transition-all duration-200
+                                ${isSelected 
+                                  ? 'bg-blue-600/20 border-blue-500' 
+                                  : 'bg-slate-900 border-slate-700 hover:border-blue-400/50'}
+                              `}>
+                                <div className="p-3">
+                                  {/* Header with checkbox, code and name in one line */}
+                                  <div className="flex items-center justify-between mb-2">
+                                    <div className="flex items-center space-x-3">
+                                      <div className={`w-4 h-4 border rounded-sm flex items-center justify-center transition-all duration-200
+                                        ${isSelected 
+                                          ? 'border-blue-500 bg-blue-500' 
+                                          : 'border-slate-600 bg-slate-900 hover:border-blue-400'}
+                                      `}>
+                                        {isSelected && (
+                                          <svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="text-white">
+                                            <polyline points="20 6 9 17 4 12"></polyline>
+                                          </svg>
+                                        )}
+                                      </div>
+                                      <div className="flex items-center space-x-2">
+                                        <span className={`font-mono font-bold text-base transition-colors duration-200
+                                          ${isSelected ? 'text-white' : 'text-white group-hover:text-white'}
+                                        `}>
+                                          {dcCode}
+                                        </span>
+                                        <span className={`fi fi-${dc.countryCode.toLowerCase()} text-sm`}></span>
+                                        <span className={`text-sm transition-colors duration-200 ${isSelected ? 'text-white/90' : 'text-slate-400 group-hover:text-slate-300'}`}>{dc.name}</span>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  
+                                  {/* Status badge */}
+                                  <div className="flex justify-center">
+                                    <div className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium border transition-all duration-200 ${statusBg} ${statusColor} ${statusBorder}`}>
+                                      <div className={`w-1.5 h-1.5 rounded-full mr-1.5 ${statusColor.replace('text-', 'bg-')}`}></div>
+                                      {statusText}
+                                    </div>
+                                  </div>
                                 </div>
-                                {isSelected && (
-                                  <div className="w-3.5 h-3.5 bg-cyber-accent rounded-full flex items-center justify-center">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                                      <polyline points="20 6 9 17 4 12"></polyline>
-                                    </svg>
-                                  </div>
-                                )}
                               </div>
-                              <div className="text-xs text-slate-300 truncate mb-1 leading-tight">{dc.name}</div>
-                              <div className={`inline-block px-1.5 py-0.5 rounded text-xs font-medium ${statusBgClass} ${statusColorClass}`}>
-                                {availStatus === "unknown" ? (
-                                  <div className="flex items-center space-x-0.5">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="animate-pulse">
-                                      <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
-                                    </svg>
-                                    <span>查询中</span>
-                                  </div>
-                                ) : (
-                                  statusText
-                                )}
-                              </div>
-                            </div>
+                                </div>
                               );
                             })}
                           </div>
-                        </div>
-                      </div>
+                    </div>
+                  </div>
                 </CardContent>
               </Card>
             </motion.div>
