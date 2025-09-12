@@ -55,6 +55,31 @@ const globalStyles = `
 .animation-delay-3000 {
   animation-delay: 3s;
 }
+
+/* 写意勾勾绘制动画 */
+@keyframes draw {
+  from {
+    stroke-dashoffset: 20;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes checkmark-appear {
+  0% {
+    transform: scale(0) rotate(-12deg);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2) rotate(3deg);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1) rotate(3deg);
+    opacity: 1;
+  }
+}
 `;
 
 interface ServerOption {
@@ -1651,36 +1676,36 @@ const ServersPage = () => {
                               className="group relative cursor-pointer transition-all duration-200 ease-out"
                                   onClick={() => toggleDatacenterSelection(server.planCode, dcCode)}
                             >
-                              {/* Config-style card */}
+                              {/* 统一蓝色主题卡片 */}
                               <div className={`relative rounded-lg border transition-all duration-200
-                                ${isSelected 
-                                  ? 'bg-blue-600/20 border-blue-500' 
-                                  : 'bg-slate-900 border-slate-700 hover:border-blue-400/50'}
+                                bg-blue-600/20 border-blue-500 hover:bg-blue-600/30 hover:border-blue-400
                               `}>
+                                {/* 选中时的现代勾勾设计 */}
+                                {isSelected && (
+                                  <div className="absolute top-1 right-1 z-10">
+                                    <div className="relative">
+                                      {/* 主勾勾容器 */}
+                                      <div className="w-6 h-6 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-full flex items-center justify-center shadow-lg shadow-emerald-500/30 border-2 border-white/20">
+                                        {/* 简洁勾勾 */}
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="text-white">
+                                          <polyline points="20 6 9 17 4 12"></polyline>
+                                        </svg>
+                                      </div>
+                                      {/* 外圈光环 */}
+                                      <div className="absolute inset-0 rounded-full border-2 border-emerald-300/40 animate-ping"></div>
+                                    </div>
+                                  </div>
+                                )}
+                                
                                 <div className="p-3">
-                                  {/* Header with checkbox, code and name in one line */}
+                                  {/* Header with code, flag and name */}
                                   <div className="flex items-center justify-between mb-2">
-                                    <div className="flex items-center space-x-3">
-                                      <div className={`w-4 h-4 border rounded-sm flex items-center justify-center transition-all duration-200
-                                        ${isSelected 
-                                          ? 'border-blue-500 bg-blue-500' 
-                                          : 'border-slate-600 bg-slate-900 hover:border-blue-400'}
-                                      `}>
-                                        {isSelected && (
-                                          <svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="text-white">
-                                            <polyline points="20 6 9 17 4 12"></polyline>
-                                          </svg>
-                                        )}
-                                      </div>
-                                      <div className="flex items-center space-x-2">
-                                        <span className={`font-mono font-bold text-base transition-colors duration-200
-                                          ${isSelected ? 'text-white' : 'text-white group-hover:text-white'}
-                                        `}>
-                                          {dcCode}
-                                        </span>
-                                        <span className={`fi fi-${dc.countryCode.toLowerCase()} text-sm`}></span>
-                                        <span className={`text-sm transition-colors duration-200 ${isSelected ? 'text-white/90' : 'text-slate-400 group-hover:text-slate-300'}`}>{dc.name}</span>
-                                      </div>
+                                    <div className="flex items-center space-x-2">
+                                      <span className={`font-mono font-bold text-base transition-colors duration-200 text-white`}>
+                                        {dcCode}
+                                      </span>
+                                      <span className={`fi fi-${dc.countryCode.toLowerCase()} text-sm`}></span>
+                                      <span className={`text-sm transition-colors duration-200 text-white/90`}>{dc.name}</span>
                                     </div>
                                   </div>
                                   
