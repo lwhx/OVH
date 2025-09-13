@@ -14,7 +14,7 @@ import {
 import { Progress } from "@/components/ui/progress";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Cpu, Database, Wifi, HardDrive, CheckSquare, Square, Settings, ArrowRightLeft, Clock } from "lucide-react";
+import { Cpu, Database, Wifi, HardDrive, CheckSquare, Square, Settings, ArrowRightLeft, Clock, Search, MapPin, ChevronDown, RefreshCw, Info } from "lucide-react";
 import { apiEvents } from "@/context/APIContext";
 import { OVH_DATACENTERS, DatacenterInfo } from "@/config/ovhConstants"; // Import from new location
 
@@ -1305,93 +1305,93 @@ const ServersPage = () => {
   };
 
   return (
-    <div className="space-y-6">
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3 }}
-      >
-        <h1 className="text-3xl font-bold mb-1 cyber-glow-text">服务器列表</h1>
-        <p className="text-cyber-muted mb-6">浏览可用服务器与实时可用性检测</p>
-      </motion.div>
-      
-      {/* 添加全局样式 */}
-      <style dangerouslySetInnerHTML={{ __html: globalStyles }} />
-
-      {/* 添加可用性检测说明 */}
-      <div className="bg-cyber-accent/15 border border-cyber-accent/50 rounded-md p-3 mb-4 shadow-md shadow-cyber-accent/10">
-        <div className="flex items-start">
-          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-cyber-accent mt-0.5 mr-2 flex-shrink-0">
-            <circle cx="12" cy="12" r="10"></circle>
-            <line x1="12" y1="16" x2="12" y2="12"></line>
-            <line x1="12" y1="8" x2="12.01" y2="8"></line>
-          </svg>
-          <p className="text-sm text-slate-100">
-            <span className="text-cyber-accent font-medium">可用性检测说明：</span> 
-            可用性检测仅针对服务器默认配置，若设置了自定义配置，实际库存状态将以进入抢购队列时为准。建议选择多个数据中心以提高抢购成功率。
-          </p>
-        </div>
-      </div>
-
-      {/* Filters and controls */}
-      <div className="cyber-panel p-4 mb-6">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-cyber-muted">
-                <circle cx="11" cy="11" r="8"></circle>
-                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-              </svg>
-            </div>
-            <input
-              type="text"
-              placeholder="搜索服务器..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="cyber-input pl-10 w-full"
-            />
-          </div>
-          
-          <div>
-            <select
-              value={selectedDatacenter}
-              onChange={(e) => setSelectedDatacenter(e.target.value)}
-              className="cyber-input w-full"
-            >
-              <option value="all">所有数据中心</option>
-              {OVH_DATACENTERS.map((dc) => (
-                <option key={dc.code} value={dc.code.toUpperCase()}>
-                  {dc.code.toUpperCase()} - {dc.name} ({dc.region})
-                </option>
-              ))}
-            </select>
-          </div>
-          
-          <div className="flex items-center justify-end space-x-4">
-            <div className="flex items-center">
-              <Clock size={16} className="text-cyber-muted mr-1.5" />
-              <span className="text-xs text-cyber-muted mr-3">
-                更新于: {formatDateTime(lastUpdated)}
-              </span>
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950">
+      {/* 简洁友好的头部 */}
+      <div className="bg-slate-900/95 border-b border-slate-800">
+        <div className="max-w-7xl mx-auto px-6 py-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl font-bold text-white mb-1">服务器列表</h1>
+              <p className="text-slate-400 text-sm">浏览可用服务器与实时可用性检测</p>
             </div>
             
-            <Button
-              onClick={() => fetchServers(true)}
-              variant="cyber"
-              size="sm"
-              className="text-xs"
-              disabled={isLoading}
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1">
-                <polyline points="1 4 1 10 7 10"></polyline>
-                <polyline points="23 20 23 14 17 14"></polyline>
-                <path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"></path>
-              </svg>
-              刷新
-            </Button>
+            <div className="flex items-center space-x-4">
+              <div className="text-right">
+                <div className="text-sm text-slate-300 font-medium">
+                  {isLoading ? '正在同步数据...' : `共 ${servers.length} 台服务器`}
+                </div>
+                <div className="text-xs text-slate-500">
+                  更新于: {lastUpdated ? lastUpdated.toLocaleTimeString() : '未知'}
+                </div>
+              </div>
+              <div className={`w-3 h-3 rounded-full ${isLoading ? 'bg-yellow-400 animate-pulse' : 'bg-emerald-400'}`}></div>
+            </div>
           </div>
         </div>
       </div>
+      
+      <div className="max-w-7xl mx-auto px-6 py-8 space-y-6">
+      
+        {/* 搜索和筛选区域 */}
+        <div className="bg-slate-800/30 backdrop-blur-sm rounded-xl border border-slate-700/50 p-6 mb-6">
+          <div className="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
+            <div className="flex-1 max-w-md">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4" />
+                <input
+                  type="text"
+                  placeholder="搜索服务器型号或配置..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full pl-10 pr-4 py-3 bg-slate-900/50 border border-slate-600 rounded-lg text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all"
+                />
+              </div>
+            </div>
+            
+            <div className="flex items-center gap-4">
+              <div className="relative">
+                <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4" />
+                <select
+                  value={selectedDatacenter}
+                  onChange={(e) => setSelectedDatacenter(e.target.value)}
+                  className="pl-10 pr-8 py-3 bg-slate-900/50 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all appearance-none cursor-pointer min-w-[200px]"
+                >
+                  <option value="all">所有数据中心</option>
+                  {OVH_DATACENTERS.map((dc) => (
+                    <option key={dc.code} value={dc.code.toUpperCase()}>
+                      {dc.code.toUpperCase()} - {dc.name}
+                    </option>
+                  ))}
+                </select>
+                <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4 pointer-events-none" />
+              </div>
+              
+              <button
+                onClick={() => {
+                  // 检测所有服务器的可用性
+                  filteredServers.forEach(server => {
+                    checkAvailability(server.planCode);
+                  });
+                }}
+                disabled={isCheckingAvailability}
+                className="flex items-center gap-2 px-4 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-600/50 text-white rounded-lg font-medium transition-all disabled:cursor-not-allowed"
+              >
+                <RefreshCw className={`w-4 h-4 ${isCheckingAvailability ? 'animate-spin' : ''}`} />
+                {isCheckingAvailability ? '检测中...' : '检测可用性'}
+              </button>
+            </div>
+          </div>
+          
+          {/* 提示信息 */}
+          <div className="mt-4 p-3 bg-blue-500/10 border border-blue-500/20 rounded-lg">
+            <div className="flex items-start gap-2">
+              <Info className="w-4 h-4 text-blue-400 mt-0.5 flex-shrink-0" />
+              <p className="text-sm text-blue-100">
+                可用性检测基于默认配置。自定义配置的实际库存以抢购时为准，建议选择多个数据中心提高成功率。
+              </p>
+            </div>
+          </div>
+        </div>
 
       {/* Loading state */}
       {isLoading ? (
@@ -1535,193 +1535,160 @@ const ServersPage = () => {
                   
                   {/* Elegant Datacenters Section */}
                   <div className="mt-6">
-                    {/* Elegant Header */}
-                    <div className="flex items-center justify-between mb-6">
-                      <div className="flex items-center space-x-4">
-                        <div className="p-3 bg-gradient-to-br from-slate-800/80 to-slate-700/80 rounded-xl border border-slate-600/50 backdrop-blur-sm">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-cyber-accent">
-                            <path d="M12 2L2 7l10 5 10-5-10-5z"/>
-                            <path d="M2 17l10 5 10-5"/>
-                            <path d="M2 12l10 5 10-5"/>
-                          </svg>
+                    {/* 蓝色科技风格头部 */}
+                    <div className="relative mb-6 overflow-hidden">
+                      <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 via-cyan-500/5 to-blue-500/10"></div>
+                      <div className="relative p-6 bg-slate-800/40 backdrop-blur-md rounded-xl border border-blue-500/30">
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center space-x-4">
+                            <div className="w-12 h-12 bg-gradient-to-br from-blue-500/20 to-cyan-500/20 rounded-xl border border-blue-400/40 flex items-center justify-center backdrop-blur-sm">
+                              <Database className="w-6 h-6 text-blue-400" />
+                            </div>
+                            <div>
+                              <h3 className="text-xl font-bold text-white mb-1 tracking-wide">数据中心部署</h3>
+                              <p className="text-blue-200/70 text-sm font-medium">
+                                已选择 <span className="text-cyan-400 font-bold">{getSelectedDatacentersList(server.planCode).length}</span> 个部署位置
+                              </p>
+                            </div>
+                          </div>
+                          
+                          <div className="flex items-center space-x-3">
+                            <button
+                              onClick={() => checkAvailability(server.planCode)}
+                              disabled={isCheckingAvailability || !isAuthenticated}
+                              className="flex items-center space-x-2 px-4 py-2 bg-blue-600/20 hover:bg-blue-600/30 disabled:bg-blue-600/10 border border-blue-500/30 rounded-lg text-blue-200 text-sm font-medium transition-all backdrop-blur-sm disabled:cursor-not-allowed"
+                            >
+                              <RefreshCw className={`w-4 h-4 ${isCheckingAvailability && selectedServer === server.planCode ? 'animate-spin' : ''}`} />
+                              <span>{isCheckingAvailability && selectedServer === server.planCode ? '检测中' : '检测可用性'}</span>
+                            </button>
+                            <button
+                              onClick={() => {
+                                const selectedDcs = getSelectedDatacentersList(server.planCode);
+                                if (selectedDcs.length > 0) {
+                                  addToQueue(server, selectedDcs);
+                                } else {
+                                  toast.error("请至少选择一个数据中心");
+                                }
+                              }}
+                              disabled={!isAuthenticated || getSelectedDatacentersList(server.planCode).length === 0}
+                              className="flex items-center space-x-2 px-6 py-2 bg-gradient-to-r from-cyan-600/80 to-blue-600/80 hover:from-cyan-600 hover:to-blue-600 disabled:from-cyan-600/30 disabled:to-blue-600/30 border border-cyan-400/30 rounded-lg text-white font-medium transition-all backdrop-blur-sm shadow-lg disabled:cursor-not-allowed"
+                            >
+                              <Database className="w-4 h-4" />
+                              <span>加入队列</span>
+                            </button>
+                          </div>
                         </div>
-                        <div>
-                          <h3 className="text-xl font-bold text-white mb-1">数据中心部署</h3>
-                          <p className="text-sm text-slate-400">
-                            已选择 <span className="text-cyber-accent font-semibold">{getSelectedDatacentersList(server.planCode).length}</span> 个位置
-                          </p>
-                        </div>
-                      </div>
-                      <div className="flex items-center space-x-3">
-                        <Button
-                          onClick={() => checkAvailability(server.planCode)}
-                          disabled={isCheckingAvailability || !isAuthenticated}
-                          variant="cyber"
-                          size="sm"
-                          className="h-10 px-4 bg-slate-800/60 hover:bg-slate-700/60 border-slate-600/50 text-slate-200 hover:text-white backdrop-blur-sm"
-                        >
-                          {isCheckingAvailability && selectedServer === server.planCode ? (
-                            <span className="inline-flex items-center">
-                              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2 animate-spin">
-                                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
-                              </svg>
-                              检查中
-                            </span>
-                          ) : (
-                            <span className="inline-flex items-center">
-                              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2">
-                                <circle cx="12" cy="12" r="10"></circle>
-                                <line x1="12" y1="16" x2="12" y2="12"></line>
-                                <line x1="12" y1="8" x2="12.01" y2="8"></line>
-                              </svg>
-                              检查可用性
-                            </span>
-                          )}
-                        </Button>
-                        <Button
-                          onClick={() => {
-                            const selectedDcs = getSelectedDatacentersList(server.planCode);
-                            if (selectedDcs.length > 0) {
-                              addToQueue(server, selectedDcs);
-                            } else {
-                              toast.error("请至少选择一个数据中心");
-                            }
-                          }}
-                          disabled={!isAuthenticated || getSelectedDatacentersList(server.planCode).length === 0}
-                          variant="cyber-filled"
-                          size="sm"
-                          className="h-10 px-6 bg-gradient-to-r from-cyber-accent to-cyber-primary hover:from-cyber-accent-dark hover:to-cyber-primary-dark text-white font-semibold"
-                        >
-                          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2">
-                            <path d="M12 2L2 7l10 5 10-5-10-5z"/>
-                            <path d="M2 17l10 5 10-5"/>
-                            <path d="M2 12l10 5 10-5"/>
-                          </svg>
-                          加入队列
-                        </Button>
                       </div>
                     </div>
                     
-                    {/* Control Bar */}
-                    <div className="flex items-center justify-between mb-4 px-1">
+                    {/* 紧凑型控制栏 */}
+                    <div className="flex items-center justify-between mb-4 p-3 bg-slate-800/30 backdrop-blur-sm rounded-lg border border-blue-500/20">
                       <div className="flex items-center space-x-3">
-                        <div className="flex items-center space-x-2 text-slate-400">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
-                          </svg>
-                          <span className="text-sm font-medium">选择部署位置</span>
+                        <div className="flex items-center space-x-1.5">
+                          <div className="w-4 h-4 bg-blue-500/20 rounded flex items-center justify-center">
+                            <MapPin className="w-2.5 h-2.5 text-blue-400" />
+                          </div>
+                          <span className="text-xs font-medium text-blue-100">选择部署位置</span>
                         </div>
-                        <div className="h-4 w-px bg-slate-600"></div>
-                        <div className="flex items-center space-x-2">
-                          <Button
+                        <div className="h-3 w-px bg-blue-500/30"></div>
+                        <div className="flex items-center space-x-1.5">
+                          <button
                             onClick={() => toggleAllDatacenters(server.planCode, true)}
-                            variant="ghost"
-                            size="sm"
-                            className="h-8 px-3 text-xs text-cyber-accent hover:bg-cyber-accent/10 hover:text-cyber-accent"
+                            className="flex items-center space-x-1 px-2 py-1 bg-blue-600/20 hover:bg-blue-600/30 border border-blue-500/30 rounded text-xs text-blue-200 font-medium transition-all"
                           >
-                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1">
-                              <polyline points="20 6 9 17 4 12"></polyline>
-                            </svg>
-                            全选
-                          </Button>
-                          <Button
+                            <CheckSquare className="w-2.5 h-2.5" />
+                            <span>全选</span>
+                          </button>
+                          <button
                             onClick={() => toggleAllDatacenters(server.planCode, false)}
-                            variant="ghost"
-                            size="sm"
-                            className="h-8 px-3 text-xs text-slate-400 hover:bg-slate-700/50 hover:text-slate-300"
+                            className="flex items-center space-x-1 px-2 py-1 bg-blue-800/20 hover:bg-blue-800/30 border border-blue-600/30 rounded text-xs text-blue-300 font-medium transition-all"
                           >
-                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1">
-                              <line x1="18" y1="6" x2="6" y2="18"></line>
-                              <line x1="6" y1="6" x2="18" y2="18"></line>
-                            </svg>
-                            取消
-                          </Button>
+                            <Square className="w-2.5 h-2.5" />
+                            <span>清空</span>
+                          </button>
                         </div>
                       </div>
                     </div>
                     
-                    {/* Elegant Datacenter Grid */}
+                    {/* 蓝色科技风格数据中心网格 */}
                     <div className="relative">
-                      {/* Subtle background pattern */}
-                      <div className="absolute inset-0 opacity-5">
-                        <div className="absolute inset-0 bg-gradient-to-br from-cyber-accent via-transparent to-cyber-primary"></div>
-                      </div>
+                      <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-transparent to-cyan-500/5 rounded-xl"></div>
                       
-                      <div className="relative grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+                      <div className="relative grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 p-4">
                         {OVH_DATACENTERS.map(dc => {
-                              const dcCode = dc.code.toUpperCase();
-                              const availStatus = availability[server.planCode]?.[dcCode.toLowerCase()] || "unknown";
-                              const isSelected = selectedDatacenters[server.planCode]?.[dcCode];
-                              
+                          const dcCode = dc.code.toUpperCase();
+                          const availStatus = availability[server.planCode]?.[dcCode.toLowerCase()] || "unknown";
+                          const isSelected = selectedDatacenters[server.planCode]?.[dcCode];
+                          
                           let statusText = "未知";
-                          let statusColor = "text-slate-400";
-                          let statusBg = "bg-slate-500/20";
-                          let statusBorder = "border-slate-500/30";
-                              
-                              if (availStatus === "unavailable") {
+                          let statusColor = "text-blue-300";
+                          let statusBg = "bg-blue-500/20";
+                          let statusBorder = "border-blue-500/30";
+                          
+                          if (availStatus === "unavailable") {
                             statusText = "不可用";
                             statusColor = "text-red-400";
                             statusBg = "bg-red-500/20";
                             statusBorder = "border-red-500/30";
-                              } else if (availStatus && availStatus !== "unknown") {
+                          } else if (availStatus && availStatus !== "unknown") {
                             statusText = availStatus.includes("H") ? availStatus : "可用";
                             statusColor = "text-green-400";
                             statusBg = "bg-green-500/20";
                             statusBorder = "border-green-500/30";
-                              }
-                              
-                              return (
-                                <div 
-                                  key={dcCode}
-                              className="group relative cursor-pointer transition-all duration-200 ease-out"
-                                  onClick={() => toggleDatacenterSelection(server.planCode, dcCode)}
+                          }
+                          
+                          return (
+                            <div 
+                              key={dcCode}
+                              className="group relative cursor-pointer transition-all duration-300 ease-out transform hover:scale-105"
+                              onClick={() => toggleDatacenterSelection(server.planCode, dcCode)}
                             >
-                              {/* 统一蓝色主题卡片 */}
-                              <div className={`relative rounded-lg border transition-all duration-200
-                                bg-blue-600/20 border-blue-500 hover:bg-blue-600/30 hover:border-blue-400
-                              `}>
+                              {/* 蓝色科技风格卡片 */}
+                              <div className={`relative rounded-xl border-2 transition-all duration-300 backdrop-blur-sm ${
+                                isSelected 
+                                  ? 'bg-gradient-to-br from-blue-600/40 to-cyan-600/40 border-cyan-400 shadow-lg shadow-cyan-500/20' 
+                                  : 'bg-blue-900/20 border-blue-500/30 hover:bg-blue-600/20 hover:border-blue-400/50'
+                              }`}>
+                                
                                 {/* 选中时的现代勾勾设计 */}
                                 {isSelected && (
-                                  <div className="absolute top-1 right-1 z-10">
+                                  <div className="absolute -top-2 -right-2 z-10">
                                     <div className="relative">
-                                      {/* 主勾勾容器 */}
                                       <div className="w-6 h-6 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-full flex items-center justify-center shadow-lg shadow-emerald-500/30 border-2 border-white/20">
-                                        {/* 简洁勾勾 */}
                                         <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="text-white">
                                           <polyline points="20 6 9 17 4 12"></polyline>
                                         </svg>
                                       </div>
-                                      {/* 外圈光环 */}
                                       <div className="absolute inset-0 rounded-full border-2 border-emerald-300/40 animate-ping"></div>
                                     </div>
                                   </div>
                                 )}
                                 
-                                <div className="p-3">
-                                  {/* Header with code, flag and name */}
-                                  <div className="flex items-center justify-between mb-2">
-                                    <div className="flex items-center space-x-2">
-                                      <span className={`font-mono font-bold text-base transition-colors duration-200 text-white`}>
+                                <div className="p-4">
+                                  {/* 数据中心信息 */}
+                                  <div className="text-center mb-3">
+                                    <div className="flex items-center justify-center space-x-2 mb-1">
+                                      <span className="font-mono font-bold text-lg text-white">
                                         {dcCode}
                                       </span>
-                                      <span className={`fi fi-${dc.countryCode.toLowerCase()} text-sm`}></span>
-                                      <span className={`text-sm transition-colors duration-200 text-white/90`}>{dc.name}</span>
+                                      <span className={`fi fi-${dc.countryCode.toLowerCase()} text-base`}></span>
                                     </div>
+                                    <div className="text-xs text-blue-200/80 font-medium">{dc.name}</div>
                                   </div>
                                   
-                                  {/* Status badge */}
+                                  {/* 状态徽章 */}
                                   <div className="flex justify-center">
-                                    <div className={`inline-flex items-center px-2 py-1 rounded text-xs font-medium border transition-all duration-200 ${statusBg} ${statusColor} ${statusBorder}`}>
+                                    <div className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border transition-all duration-200 ${statusBg} ${statusColor} ${statusBorder}`}>
                                       <div className={`w-1.5 h-1.5 rounded-full mr-1.5 ${statusColor.replace('text-', 'bg-')}`}></div>
                                       {statusText}
                                     </div>
                                   </div>
                                 </div>
                               </div>
-                                </div>
-                              );
-                            })}
-                          </div>
+                            </div>
+                          );
+                        })}
+                      </div>
                     </div>
                   </div>
                 </CardContent>
@@ -1730,6 +1697,7 @@ const ServersPage = () => {
           ))}
         </motion.div>
       )}
+      </div>
     </div>
   );
 };
