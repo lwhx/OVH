@@ -20,5 +20,6 @@ export const OVH_DATACENTERS: DatacenterInfo[] = [
   { code: "waw", name: "华沙", region: "波兰", flag: "🇵🇱", countryCode: "pl" },
   { code: "fra", name: "法兰克福", region: "德国", flag: "🇩🇪", countryCode: "de" },
   { code: "lon", name: "伦敦", region: "英国", flag: "🇬🇧", countryCode: "gb" },
-  { code: "eri", name: "厄斯沃尔", region: "英国", flag: "🇬🇧", countryCode: "gb" } // Assuming 'eri' is Erith, UK.
+  { code: "eri", name: "厄斯沃尔", region: "英国", flag: "🇬🇧", countryCode: "gb" }, // Assuming 'eri' is Erith, UK.
+  { code: "ynm", name: "孟买", region: "印度", flag: "🇮🇳", countryCode: "in" } // YNM datacenter - Mumbai, India
 ]; 

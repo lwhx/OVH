@@ -16,6 +16,16 @@ interface StatsType {
   purchaseFailed: number;
 }
 
+interface QueueItem {
+  id: string;
+  planCode: string;
+  datacenter: string;
+  status: string;
+  createdAt: string;
+  lastCheckTime: number;
+  retryInterval: number;
+}
+
 const Dashboard = () => {
   const { isAuthenticated } = useAPI();
   const [stats, setStats] = useState<StatsType>({
@@ -25,6 +35,7 @@ const Dashboard = () => {
     purchaseSuccess: 0,
     purchaseFailed: 0,
   });
+  const [queueItems, setQueueItems] = useState<QueueItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -34,15 +45,29 @@ const Dashboard = () => {
         setStats(response.data);
       } catch (error) {
         console.error("Error fetching stats:", error);
+      }
+    };
+
+    const fetchQueue = async () => {
+      try {
+        const response = await axios.get(`${API_URL}/queue`);
+        setQueueItems(response.data || []);
+      } catch (error) {
+        console.error("Error fetching queue:", error);
+        setQueueItems([]);
       } finally {
         setIsLoading(false);
       }
     };
 
-    fetchStats();
+    const fetchData = async () => {
+      await Promise.all([fetchStats(), fetchQueue()]);
+    };
+
+    fetchData();
     
     // Set up polling interval
-    const interval = setInterval(fetchStats, 30000);
+    const interval = setInterval(fetchData, 30000);
     
     return () => clearInterval(interval);
   }, []);
@@ -238,7 +263,7 @@ const Dashboard = () => {
                 <div key={i} className="h-16 bg-cyber-grid/50 animate-pulse rounded"></div>
               ))}
             </div>
-          ) : stats.activeQueues === 0 ? (
+          ) : queueItems.length === 0 ? (
             <div className="cyber-panel bg-cyber-grid/30 p-4 text-center text-cyber-muted">
               <p>没有活跃队列</p>
               <Link 
@@ -250,32 +275,71 @@ const Dashboard = () => {
             </div>
           ) : (
             <div className="space-y-3">
-              {/* 这里可以显示队列详情，但因为我们没有实际数据，所以先用占位符 */}
-              <div className="cyber-panel p-3 bg-cyber-grid/30 flex justify-between items-center">
-                <div className="flex-1">
-                  <p className="font-medium">25skmystery01</p>
-                  <div className="flex items-center gap-2 text-xs text-cyber-muted mt-1">
-                    <span>RBX</span>
-                    <span>•</span>
-                    <span>内存: 32GB</span>
-                    <span>•</span>
-                    <span>硬盘: 2TB</span>
+              {queueItems.slice(0, 3).map((item) => {
+                const getStatusColor = (status: string) => {
+                  switch (status.toLowerCase()) {
+                    case 'running':
+                      return 'text-green-400';
+                    case 'waiting':
+                      return 'text-yellow-400';
+                    case 'failed':
+                      return 'text-red-400';
+                    default:
+                      return 'text-cyber-muted';
+                  }
+                };
+
+                const getStatusText = (status: string) => {
+                  switch (status.toLowerCase()) {
+                    case 'running':
+                      return '运行中';
+                    case 'waiting':
+                      return '等待中';
+                    case 'failed':
+                      return '失败';
+                    default:
+                      return status;
+                  }
+                };
+
+                return (
+                  <div key={item.id} className="cyber-panel p-3 bg-cyber-grid/30 flex justify-between items-center">
+                    <div className="flex-1">
+                      <p className="font-mono font-medium">{item.planCode}</p>
+                      <div className="flex items-center gap-2 text-xs text-cyber-muted mt-1">
+                        <span className="font-mono">{item.datacenter.toUpperCase()}</span>
+                        <span>•</span>
+                        <span>创建时间: {new Date(item.createdAt).toLocaleString()}</span>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className={`text-xs flex items-center ${getStatusColor(item.status)}`}>
+                        <span className={`w-1.5 h-1.5 mr-1 rounded-full ${item.status.toLowerCase() === 'running' ? 'bg-green-400 animate-pulse' : 'bg-current'}`}></span>
+                        {getStatusText(item.status)}
+                      </span>
+                      <Link 
+                        to="/queue" 
+                        className="p-1 hover:text-cyber-accent transition-colors"
+                        title="查看详情"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="m9 18 6-6-6-6"/>
+                        </svg>
+                      </Link>
+                    </div>
                   </div>
+                );
+              })}
+              {queueItems.length > 3 && (
+                <div className="text-center pt-2">
+                  <Link 
+                    to="/queue" 
+                    className="text-xs text-cyber-muted hover:text-cyber-accent transition-colors"
+                  >
+                    还有 {queueItems.length - 3} 个队列...
+                  </Link>
                 </div>
-                <div className="flex items-center gap-2">
-                  <span className="animate-pulse text-green-400 text-xs flex items-center">
-                    <span className="w-1.5 h-1.5 mr-1 rounded-full bg-green-400"></span>
-                    运行中
-                  </span>
-                  <button className="p-1 hover:text-cyber-accent transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                      <line x1="9" y1="9" x2="15" y2="15"></line>
-                      <line x1="15" y1="9" x2="9" y2="15"></line>
-                    </svg>
-                  </button>
-                </div>
-              </div>
+              )}
             </div>
           )}
         </motion.div>

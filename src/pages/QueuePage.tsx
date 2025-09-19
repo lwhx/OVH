@@ -19,6 +19,7 @@ interface QueueItem {
   updatedAt: string;
   retryInterval: number;
   retryCount: number;
+  lastCheckTime: number;
 }
 
 interface ServerOption {
@@ -51,7 +52,8 @@ const QueuePage = () => {
   const [planCodeInput, setPlanCodeInput] = useState<string>("123");
   const [selectedServer, setSelectedServer] = useState<ServerPlan | null>(null);
   const [selectedDatacenters, setSelectedDatacenters] = useState<string[]>([]);
-  const [retryInterval, setRetryInterval] = useState<number>(29);
+  const [retryInterval, setRetryInterval] = useState<number>(300);
+  const [currentTime, setCurrentTime] = useState(Date.now());
 
   // Fetch queue items
   const fetchQueueItems = async () => {
@@ -119,7 +121,7 @@ const QueuePage = () => {
       setShowAddForm(false);
       setPlanCodeInput("");
       setSelectedDatacenters([]);
-      setRetryInterval(30);
+      setRetryInterval(300);
     }
   };
 
@@ -152,15 +154,50 @@ const QueuePage = () => {
     }
   };
 
+  // Calculate countdown for a queue item
+  const calculateCountdown = (item: QueueItem): number => {
+    if (item.status !== 'running' || item.lastCheckTime === 0) {
+      return 0;
+    }
+    
+    const now = currentTime / 1000; // Convert to seconds
+    const nextCheckTime = item.lastCheckTime + item.retryInterval;
+    const remainingTime = Math.max(0, nextCheckTime - now);
+    
+    return Math.ceil(remainingTime);
+  };
+
+  // Format countdown time
+  const formatCountdown = (seconds: number): string => {
+    if (seconds <= 0) return "即将开始";
+    
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    
+    if (minutes > 0) {
+      return `${minutes}分${remainingSeconds}秒`;
+    } else {
+      return `${remainingSeconds}秒`;
+    }
+  };
+
   // Initial fetch
   useEffect(() => {
     fetchQueueItems();
     fetchServers();
     
-    // Set up polling interval
-    const interval = setInterval(fetchQueueItems, 10000);
+    // Set up polling interval for queue data
+    const queueInterval = setInterval(fetchQueueItems, 10000);
     
-    return () => clearInterval(interval);
+    // Set up timer for countdown updates (every second)
+    const timerInterval = setInterval(() => {
+      setCurrentTime(Date.now());
+    }, 1000);
+    
+    return () => {
+      clearInterval(queueInterval);
+      clearInterval(timerInterval);
+    };
   }, [isAuthenticated]);
 
   // Update selectedServer when planCodeInput or servers list changes
@@ -307,12 +344,6 @@ const QueuePage = () => {
 
       {/* Queue List */}
       <motion.div variants={containerVariants} initial="hidden" animate="visible">
-        {isLoading && queueItems.length === 0 && (
-          <div className="text-center py-10">
-            <RefreshCwIcon className="mx-auto animate-spin text-cyber-primary mb-2" size={24} />
-            <p className="text-cyber-secondary">正在加载队列...</p>
-          </div>
-        )}
 
         {!isLoading && queueItems.length === 0 && (
           <div className="text-center py-10 border border-dashed border-cyber-border rounded-lg">
@@ -337,9 +368,20 @@ const QueuePage = () => {
                     </span>
                     <span className="text-sm text-cyber-text-dimmed">DC: {item.datacenter.toUpperCase()}</span>
                   </div>
-                  <p className="text-xs text-cyber-muted">
-                    下次尝试: {item.retryCount > 0 ? `${item.retryInterval}秒后 (第${item.retryCount + 1}次)` : `即将开始` } | 创建于: {new Date(item.createdAt).toLocaleString()}
-                  </p>
+                  <div className="flex items-center gap-3 text-xs text-cyber-muted">
+                    <div className="flex items-center gap-1">
+                      <span>下次尝试:</span>
+                      {item.status === 'running' ? (
+                        <span className="font-mono text-cyber-primary-accent">
+                          {formatCountdown(calculateCountdown(item))}
+                        </span>
+                      ) : (
+                        <span>{item.retryCount > 0 ? `${item.retryInterval}秒后 (第${item.retryCount + 1}次)` : `即将开始`}</span>
+                      )}
+                    </div>
+                    <span className="text-cyber-border">|</span>
+                    <span>创建于: {new Date(item.createdAt).toLocaleString()}</span>
+                  </div>
                 </div>
                 <div className="flex items-center gap-2 mt-2 sm:mt-0 flex-shrink-0">
                   <span 

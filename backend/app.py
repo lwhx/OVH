@@ -1713,7 +1713,7 @@ def add_queue_item():
         "status": "running",  # 直接设置为 running
         "createdAt": datetime.now().isoformat(),
         "updatedAt": datetime.now().isoformat(),
-        "retryInterval": data.get("retryInterval", 30),
+        "retryInterval": data.get("retryInterval", 300),
         "retryCount": 0, # 初始化为0, process_queue的首次检查会处理
         "lastCheckTime": 0 # 初始化为0, process_queue的首次检查会处理
     }
